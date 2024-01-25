@@ -153,14 +153,7 @@ impl<S: StateReader> TransactionExecutor<S> {
 
     /// Returns the state diff and a list of contract class hash with the corresponding list of
     /// visited PC values.
-    pub fn finalize(&mut self, is_pending_block: bool) -> (PyStateDiff, Vec<(PyFelt, Vec<usize>)>) {
-        // Do not cache classes that were declared during a pending block.
-        // They will be redeclared, and should not be cached since the content of this block is
-        // transient.
-        if !is_pending_block {
-            self.state.move_classes_to_global_cache();
-        }
-
+    pub fn finalize(&mut self, _is_pending_block: bool) -> (PyStateDiff, Vec<(PyFelt, Vec<usize>)>) {
         // Extract visited PCs from block_context, and convert it to a python-friendly type.
         let visited_pcs = self
             .state
@@ -174,6 +167,14 @@ impl<S: StateReader> TransactionExecutor<S> {
             .collect();
 
         (PyStateDiff::from(self.state.to_state_diff()), visited_pcs)
+    }
+
+    pub fn update_global_cache(&mut self){
+        // Do not cache classes that were declared during a pending block.
+        // They will be redeclared, and should not be cached since the content of this block is
+        // transient.
+        self.state.move_classes_to_global_cache();
+
     }
 
     // Block pre-processing; see `block_execution::pre_process_block` documentation.
