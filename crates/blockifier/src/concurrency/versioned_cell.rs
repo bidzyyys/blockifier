@@ -4,30 +4,30 @@ use std::collections::BTreeMap;
 #[path = "versioned_cell_test.rs"]
 pub mod test;
 
-pub(crate) type VersionId = u64;
+pub(crate) type Version = u64;
 
-#[derive(Clone)]
+/// A storage cell.
+/// It is versioned in the sense that it holds a state of read and writes operation done on it by
+/// different versions of executions.
+/// This allows maintaining the cell with the correct value in the context of each execution.
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct VersionedCell<T> {
     pub initial_value: T,
-    pub write_versions: BTreeMap<VersionId, T>,
+    pub writes: BTreeMap<Version, T>,
 }
 
 impl<T> VersionedCell<T> {
     pub fn new(initial_value: T) -> Self {
-        VersionedCell { initial_value, write_versions: BTreeMap::new() }
+        VersionedCell { initial_value, writes: BTreeMap::new() }
     }
 
-    // Retrieving the most recent value written by a version less than or equal to the provided
+    // Retrieves the most recent value written by a version less than or equal to the provided
     // version.
-    pub fn read(&self, id: VersionId) -> &T {
-        let closest_version =
-            self.write_versions.range(..=id).next_back().map(|(&version, _)| version);
-
-        let last_value = closest_version.and_then(|version| self.write_versions.get(&version));
-        if let Some(last_value) = last_value { last_value } else { &self.initial_value }
+    pub fn read(&self, version: Version) -> &T {
+        self.writes.range(..=version).next_back().map_or(&self.initial_value, |(_, value)| value)
     }
 
-    pub fn write(&mut self, version: VersionId, value: T) {
-        self.write_versions.insert(version, value);
+    pub fn write(&mut self, version: Version, value: T) {
+        self.writes.insert(version, value);
     }
 }
