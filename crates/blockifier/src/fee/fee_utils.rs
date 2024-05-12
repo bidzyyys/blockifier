@@ -23,7 +23,7 @@ pub mod test;
 pub fn extract_l1_gas_and_vm_usage(resources: &ResourcesMapping) -> (u128, ResourcesMapping) {
     let mut vm_resource_usage = resources.0.clone();
     let l1_gas_usage = vm_resource_usage
-        .remove(constants::L1_GAS_USAGE)
+        .shift_remove(constants::L1_GAS_USAGE)
         .expect("`ResourcesMapping` does not have the key `l1_gas_usage`.");
 
     (l1_gas_usage, ResourcesMapping(vm_resource_usage))
@@ -32,7 +32,7 @@ pub fn extract_l1_gas_and_vm_usage(resources: &ResourcesMapping) -> (u128, Resou
 pub fn extract_l1_blob_gas_usage(resources: &ResourcesMapping) -> (u128, ResourcesMapping) {
     let mut vm_resource_usage = resources.0.clone();
     let l1_blob_gas_usage = vm_resource_usage
-        .remove(constants::BLOB_GAS_USAGE)
+        .shift_remove(constants::BLOB_GAS_USAGE)
         .expect("`ResourcesMapping` does not have the key `blob_gas_usage`.");
 
     (l1_blob_gas_usage, ResourcesMapping(vm_resource_usage))
@@ -43,8 +43,8 @@ pub fn extract_n_steps(resources: &ResourcesMapping) -> (u128, ResourcesMapping)
     // The "segment arena" builtin is not part of SHARP (not in any proof layout).
     // Each instance requires approximately 10 steps in the OS.
     // TODO(Noa, 01/07/23): Verify the removal of the segment_arena builtin.
-    let n_steps = vm_resource_usage.remove(constants::N_STEPS_RESOURCE).unwrap_or_default()
-        + 10 * vm_resource_usage.remove(SEGMENT_ARENA_BUILTIN_NAME).unwrap_or_default();
+    let n_steps = vm_resource_usage.shift_remove(constants::N_STEPS_RESOURCE).unwrap_or_default()
+        + 10 * vm_resource_usage.shift_remove(SEGMENT_ARENA_BUILTIN_NAME).unwrap_or_default();
     (n_steps, ResourcesMapping(vm_resource_usage))
 }
 
