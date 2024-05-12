@@ -16,9 +16,9 @@ pub struct TransactionContext {
 #[derive(Clone, Debug, Encode, Decode)]
 #[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct BlockContext {
-    pub(crate) block_info: BlockInfo,
-    pub(crate) chain_info: ChainInfo,
-    pub(crate) versioned_constants: VersionedConstants,
+    pub block_info: BlockInfo,
+    pub chain_info: ChainInfo,
+    pub versioned_constants: VersionedConstants,
 }
 
 impl BlockContext {
