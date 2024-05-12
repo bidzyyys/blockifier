@@ -26,7 +26,7 @@ macro_rules! retdata {
     };
 }
 
-#[cfg_attr(test, derive(Clone))]
+#[cfg_attr(any(test, feature = "testing"), derive(Clone))]
 #[derive(Debug, Default, Eq, PartialEq, Serialize, Encode, Decode)]
 pub struct OrderedEvent {
     #[codec(encoded_as = "crate::scale_codecs::USizeCodec")]
@@ -72,7 +72,7 @@ impl MessageL1CostInfo {
     }
 }
 
-#[cfg_attr(test, derive(Clone))]
+#[cfg_attr(any(test, feature = "testing"), derive(Clone))]
 #[derive(Debug, Default, Eq, PartialEq, Serialize, Encode, Decode)]
 #[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct MessageToL1 {
@@ -80,7 +80,7 @@ pub struct MessageToL1 {
     pub payload: L2ToL1Payload,
 }
 
-#[cfg_attr(test, derive(Clone))]
+#[cfg_attr(any(test, feature = "testing"), derive(Clone))]
 #[derive(Debug, Default, Eq, PartialEq, Serialize, Encode, Decode)]
 pub struct OrderedL2ToL1Message {
     #[codec(encoded_as = "crate::scale_codecs::USizeCodec")]
@@ -108,7 +108,7 @@ impl scale_info::TypeInfo for OrderedL2ToL1Message {
 }
 
 /// Represents the effects of executing a single entry point.
-#[cfg_attr(test, derive(Clone))]
+#[cfg_attr(any(test, feature = "testing"), derive(Clone))]
 #[derive(Debug, Default, Eq, PartialEq, Serialize, Encode, Decode)]
 #[cfg_attr(feature = "scale-info", derive(scale_info::TypeInfo))]
 pub struct CallExecution {
@@ -207,6 +207,7 @@ impl TestExecutionSummary {
 }
 
 /// Represents the full effects of executing an entry point, including the inner calls it invoked.
+#[cfg_attr(any(test, feature = "testing"), derive(Clone))]
 #[derive(Debug, Default, Eq, PartialEq, Serialize, Encode, Decode)]
 pub struct CallInfo {
     pub call: CallEntryPoint,

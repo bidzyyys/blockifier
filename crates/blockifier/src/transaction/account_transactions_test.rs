@@ -471,8 +471,8 @@ fn test_revert_invoke(
     // apart from that.
     let mut bouncer_resources = tx_execution_info.bouncer_resources.clone();
     let mut actual_resources = tx_execution_info.actual_resources.clone();
-    let bouncer_steps = bouncer_resources.0.remove(N_STEPS_RESOURCE).unwrap();
-    let actual_steps = actual_resources.0.remove(N_STEPS_RESOURCE).unwrap();
+    let bouncer_steps = bouncer_resources.0.shift_remove(N_STEPS_RESOURCE).unwrap();
+    let actual_steps = actual_resources.0.shift_remove(N_STEPS_RESOURCE).unwrap();
     if bouncer_steps >= actual_steps {
         panic!("Expected {} < {}.", bouncer_steps, actual_steps);
     }
